@@ -1,0 +1,36 @@
+# OS & IDE
+.DS_Store
+Thumbs.db
+.idea/
+*.iml
+.vscode/
+*.swp
+
+# Java & Spring Boot
+target/
+build/
+*.class
+*.jar
+*.war
+*.log
+logs/
+.classpath
+.project
+.settings/
+HELP.md
+
+# Angular
+node_modules/
+dist/
+.angular/
+connect.lock
+coverage/
+
+# Docker & Local Data
+postgres_data/
+rabbitmq_data/
+
+# Secrets & Environment Variables
+.env
+.env.*
+application-secret.properties
