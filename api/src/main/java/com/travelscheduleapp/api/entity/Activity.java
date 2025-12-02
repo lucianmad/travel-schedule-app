@@ -16,10 +16,13 @@ public class Activity {
     private int dayNumber;
 
     @Column(nullable = false)
-    private String dayMoment;
+    private int orderIndex;
 
-    @Column(nullable = false, columnDefinition = "TEXT")
+    @Column(nullable = false)
     private String description;
+
+    @Column(nullable = false)
+    private String duration;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "trip_id")

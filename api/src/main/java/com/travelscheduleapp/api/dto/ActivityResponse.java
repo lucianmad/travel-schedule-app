@@ -4,7 +4,8 @@ public record ActivityResponse(
         Long id,
         Long tripId,
         int dayNumber,
-        String dayMoment,
+        int orderIndex,
+        String duration,
         String description
 ) {
 }

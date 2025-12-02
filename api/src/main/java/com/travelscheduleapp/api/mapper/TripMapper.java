@@ -1,6 +1,6 @@
 package com.travelscheduleapp.api.mapper;
 
-import com.travelscheduleapp.api.TripStatus;
+import com.travelscheduleapp.api.entity.TripStatus;
 import com.travelscheduleapp.api.dto.TripRequest;
 import com.travelscheduleapp.api.dto.TripResponse;
 import com.travelscheduleapp.api.entity.Trip;

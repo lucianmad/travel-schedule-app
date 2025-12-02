@@ -10,14 +10,16 @@ public class ActivityMapper {
     public Activity toEntity(ActivityRequest activityRequest) {
         var activity = new Activity();
         activity.setDayNumber(activityRequest.dayNumber());
-        activity.setDayMoment(activityRequest.dayMoment());
+        activity.setOrderIndex(activityRequest.orderIndex());
+        activity.setDuration(activityRequest.duration());
         activity.setDescription(activityRequest.description());
         return activity;
     }
 
     public void updateEntity(Activity activity, ActivityRequest activityRequest) {
         activity.setDayNumber(activityRequest.dayNumber());
-        activity.setDayMoment(activityRequest.dayMoment());
+        activity.setOrderIndex(activityRequest.orderIndex());
+        activity.setDuration(activityRequest.duration());
         activity.setDescription(activityRequest.description());
     }
 
@@ -30,7 +32,8 @@ public class ActivityMapper {
                 activity.getId(),
                 activity.getTrip().getId(),
                 activity.getDayNumber(),
-                activity.getDayMoment(),
+                activity.getOrderIndex(),
+                activity.getDuration(),
                 activity.getDescription()
         );
     }

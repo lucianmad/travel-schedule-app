@@ -1,4 +1,4 @@
-package com.travelscheduleapp.api;
+package com.travelscheduleapp.api.entity;
 
 public enum TripStatus {
     PENDING,

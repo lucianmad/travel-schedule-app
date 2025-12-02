@@ -1,10 +1,10 @@
 package com.travelscheduleapp.api.entity;
 
-import com.travelscheduleapp.api.TripStatus;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.ToString;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -31,5 +31,5 @@ public class Trip {
 
     @OneToMany(mappedBy = "trip", cascade = CascadeType.ALL)
     @ToString.Exclude
-    private List<Activity> activityList;
+    private List<Activity> activityList = new ArrayList<>();
 }
