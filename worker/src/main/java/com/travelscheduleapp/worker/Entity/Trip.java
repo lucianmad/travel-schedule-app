@@ -17,6 +17,7 @@ public class Trip {
     @Column(name = "number_of_days")
     private int numberOfDays;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "trip_status")
-    private String tripStatus;
+    private TripStatus tripStatus;
 }

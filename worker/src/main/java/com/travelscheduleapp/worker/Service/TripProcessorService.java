@@ -2,6 +2,7 @@ package com.travelscheduleapp.worker.Service;
 
 import com.travelscheduleapp.worker.Entity.Activity;
 import com.travelscheduleapp.worker.Entity.Trip;
+import com.travelscheduleapp.worker.Entity.TripStatus;
 import com.travelscheduleapp.worker.Repository.ActivityRepo;
 import com.travelscheduleapp.worker.Repository.TripRepo;
 import com.travelscheduleapp.worker.Config.RabbitMQConfig;
@@ -43,32 +44,37 @@ public class TripProcessorService {
 
         Trip trip = tripOptional.get();
 
-        trip.setTripStatus("PROCESSING");
+        trip.setTripStatus(TripStatus.PROCESSING);
         tripRepository.save(trip);
 
         try {
-            List<String> generatedActivities = aiService.generateItinerary(trip.getDestination(), "Standard");
+            List<AiActivityDto> generatedActivities = aiService.generateItinerary(
+                    trip.getDestination(),
+                    trip.getNumberOfDays(),
+                    "Standard"
+            );
 
             int index = 1;
-            for (String actText : generatedActivities) {
+            for (AiActivityDto dto : generatedActivities) {
                 Activity activity = new Activity();
 
-                activity.setDescription(actText);       // Textul de la AI
-                activity.setDuration("2 hours");        // Valoare default obligatorie
-                activity.setDayNumber(1);               // Valoare default obligatorie
-                activity.setOrderIndex(index++);        // Ordinea (1, 2, 3...)
-                activity.setTrip(trip);                 // Legătura cu Trip
+                activity.setDescription(dto.getDescription());
+                activity.setDuration(dto.getDuration());
+                activity.setDayNumber(dto.getDay());
+
+                activity.setOrderIndex(index++);
+                activity.setTrip(trip);
 
                 activityRepository.save(activity);
             }
 
-            trip.setTripStatus("COMPLETED");
+            trip.setTripStatus(TripStatus.COMPLETED);
             tripRepository.save(trip);
-            System.out.println(" [Worker] Trip ID " + tripId + " finished successfully!");
+            System.out.println(" [Worker] Trip ID " + tripId + " finished successfully with " + generatedActivities.size() + " activities!");
 
         } catch (Exception e) {
             e.printStackTrace();
-            trip.setTripStatus("FAILED");
+            trip.setTripStatus(TripStatus.FAILED);
             tripRepository.save(trip);
         }
     }

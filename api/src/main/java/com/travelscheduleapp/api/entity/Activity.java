@@ -1,12 +1,15 @@
 package com.travelscheduleapp.api.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 @Entity
 @Table(name = "activities")
 @Data
+@EqualsAndHashCode(exclude = "trip")
 public class Activity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,7 +21,7 @@ public class Activity {
     @Column(nullable = false)
     private int orderIndex;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 1000)
     private String description;
 
     @Column(nullable = false)
@@ -27,5 +30,6 @@ public class Activity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "trip_id")
     @ToString.Exclude
+    @JsonIgnore
     private Trip trip;
 }
