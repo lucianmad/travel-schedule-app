@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -18,37 +19,54 @@ public class AiGenerationService {
         this.objectMapper = objectMapper;
     }
 
-    public List<String> generateItinerary(String destination, String budget) {
-        System.out.println(" [AI Service] Calling LOCAL OLLAMA for: " + destination);
+    public List<AiActivityDto> generateItinerary(String destination, int numberOfDays, String budget) {
+        int totalActivities = numberOfDays * 3;
 
-        String prompt = String.format(
-                "You are a travel assistant. Generate 5 tourist activities for %s. " +
-                        "RULES: \n" +
-                        "1. Return ONLY a raw JSON array of strings.\n" +
-                        "2. Do NOT use markdown code blocks (like ```json).\n" +
-                        "3. Do NOT add any introductory text.\n" +
-                        "4. Keep activity names under 100 characters.\n" +
-                        "Example format: [\"Activity 1\", \"Activity 2\"]",
-                destination
-        );
+        System.out.println(" [AI Service] Asking OLLAMA for " + totalActivities + " activities in " + destination);
+
+        String prompt = String.format("""
+            You are a travel assistant. Generate a travel itinerary for %s for %d days.
+            Total activities required: %d (3 per day).
+            
+            RULES:
+            1. Return ONLY a valid JSON Array.
+            2. Use curly braces { } for each activity object.
+            3. Do not use markdown or extra text.
+            
+            REQUIRED JSON FORMAT:
+            [
+              {
+                "description": "Visit the City Center",
+                "day": 1,
+                "duration": "2 hours"
+              },
+              {
+                "description": "Dinner at local restaurant",
+                "day": 2,
+                "duration": "1.5 hours"
+              }
+            ]
+            """, destination, numberOfDays, totalActivities);
 
         try {
             String response = chatModel.call(prompt);
-            System.out.println(" [AI Service] Raw response: " + response);
 
             String cleanJson = response.replace("```json", "").replace("```", "").trim();
-
             int start = cleanJson.indexOf("[");
             int end = cleanJson.lastIndexOf("]");
+
             if (start != -1 && end != -1) {
                 cleanJson = cleanJson.substring(start, end + 1);
+            } else {
+                System.err.println(" [AI Service] Invalid JSON format received.");
+                return Collections.emptyList();
             }
 
-            return objectMapper.readValue(cleanJson, new TypeReference<List<String>>() {});
+            return objectMapper.readValue(cleanJson, new TypeReference<List<AiActivityDto>>() {});
 
         } catch (Exception e) {
             System.err.println("AI Error: " + e.getMessage());
-            return List.of("Visit " + destination + " Center (Fallback)", "Local Park Walk");
+            return Collections.emptyList();
         }
     }
 }
