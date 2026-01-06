@@ -1,22 +1,21 @@
 import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
 import { User } from '../../models/user';
 import { TripComponent } from '../trip/trip';
 
 @Component({
   selector: 'app-home',
-  standalone: true, // 2. Make sure Home is standalone
-  imports: [TripComponent], // 3. Add TripComponent to imports
+  standalone: true,
+  imports: [CommonModule, TripComponent],
   templateUrl: './home.html',
   styleUrl: './home.css',
 })
 export class Home {
-  user: User;
+  user: User | null;
 
-  constructor(
-    private authService: AuthService,
-  ) {
-    this.user = this.authService.getCurrentUser() as User;
+  constructor(private authService: AuthService) {
+    this.user = this.authService.getCurrentUser();
   }
 
   onLogout(): void {

@@ -25,13 +25,6 @@ export class TripComponent implements OnInit {
   isDetailOpen = signal(false);
 
   newTrip: TripRequest = { destination: '', numberOfDays: 1 };
-  
-  newActivity: ActivityRequest = {
-    description: '',
-    duration: '',
-    dayNumber: 1,
-    orderIndex: 0
-  };
 
   ngOnInit() {
     this.loadTrips();

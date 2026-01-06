@@ -56,12 +56,6 @@
         <div class="activities-section">
           <h3>Itinerary</h3>
           
-          <div class="add-row">
-            <input type="number" [(ngModel)]="newActivity.dayNumber" placeholder="Day" class="w-small">
-            <input [(ngModel)]="newActivity.description" placeholder="Activity Description" class="w-large">
-            <input [(ngModel)]="newActivity.duration" placeholder="Duration" class="w-medium">
-            <button class="btn-primary" (click)="addActivity()">Add</button>
-          </div>
 
           <div class="list">
             @for (act of trip.activities; track act.id) {
