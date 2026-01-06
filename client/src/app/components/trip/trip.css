@@ -1,0 +1,43 @@
+/* Layout */
+.main-container { padding: 20px; font-family: 'Segoe UI', sans-serif; background: #f8f9fa; min-height: 100vh; }
+.navbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+
+/* Grid */
+.grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; }
+.card { background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.1); cursor: pointer; transition: 0.2s; }
+.card:hover { transform: translateY(-5px); box-shadow: 0 5px 15px rgba(0,0,0,0.15); }
+.card-img-placeholder img { width: 100%; height: 160px; object-fit: cover; }
+.card-content { padding: 15px; }
+.days { color: #666; font-size: 0.9em; margin: 5px 0; }
+.status { color: #888; font-size: 0.8em; text-transform: uppercase; letter-spacing: 1px; }
+
+/* Modals */
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; z-index: 100; }
+.modal-box { background: white; padding: 25px; border-radius: 8px; width: 350px; max-width: 90%; }
+.modal-box.wide { width: 700px; }
+.modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding-bottom: 15px; margin-bottom: 20px; }
+
+/* Form Elements */
+.form-group { margin-bottom: 15px; }
+label { display: block; margin-bottom: 5px; font-weight: bold; font-size: 0.9em; }
+input { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; }
+.w-small { width: 70px; }
+.w-medium { width: 100px; }
+.w-large { flex: 1; }
+
+.add-row { display: flex; gap: 10px; margin-bottom: 20px; }
+.modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
+
+/* List */
+.list-item { display: flex; align-items: center; padding: 10px; border-bottom: 1px solid #f0f0f0; gap: 15px; }
+.badge { background: #e3f2fd; color: #1976d2; padding: 2px 8px; border-radius: 4px; font-size: 0.85em; font-weight: bold; }
+.desc { flex: 1; }
+.dur { color: #666; font-size: 0.9em; }
+.icon-btn { border: none; background: none; color: #999; cursor: pointer; font-size: 1.1em; }
+.icon-btn:hover { color: red; }
+
+/* Buttons */
+button { padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; }
+.btn-primary { background: #6200ea; color: white; }
+.btn-primary:hover { background: #3700b3; }
+.btn-danger { background: #d32f2f; color: white; }

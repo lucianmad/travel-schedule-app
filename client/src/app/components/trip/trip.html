@@ -1,0 +1,80 @@
+<div class="main-container">
+  
+  <nav class="navbar">
+    <h1>TravelPlan</h1>
+    <button class="btn-primary" (click)="isCreateOpen.set(true)">+ New Trip</button>
+  </nav>
+
+  <div class="grid-container">
+    @for (trip of trips(); track trip.id) {
+      <div class="card" (click)="selectTrip(trip)">
+        <div class="card-img-placeholder">
+          <img [src]="'https://picsum.photos/seed/' + trip.id + '/400/200'" alt="Trip">
+        </div>
+        <div class="card-content">
+          <h3>{{ trip.destination }}</h3>
+          <p class="days">{{ trip.numberOfDays }} Days</p>
+          <p class="status">{{ trip.status }}</p>
+        </div>
+      </div>
+    } @empty {
+      <div class="empty-state">No trips found. Create one!</div>
+    }
+  </div>
+
+  @if (isCreateOpen()) {
+    <div class="modal-overlay" (click)="isCreateOpen.set(false)">
+      <div class="modal-box" (click)="$event.stopPropagation()">
+        <h2>Create Trip</h2>
+        
+        <div class="form-group">
+          <label>Destination</label>
+          <input [(ngModel)]="newTrip.destination" placeholder="Paris, France">
+        </div>
+        
+        <div class="form-group">
+          <label>Days</label>
+          <input type="number" [(ngModel)]="newTrip.numberOfDays">
+        </div>
+
+        <div class="modal-actions">
+          <button (click)="isCreateOpen.set(false)">Cancel</button>
+          <button class="btn-primary" (click)="saveTrip()">Save</button>
+        </div>
+      </div>
+    </div>
+  }
+
+  @if (isDetailOpen() && selectedTrip(); as trip) {
+    <div class="modal-overlay" (click)="closeModals()">
+      <div class="modal-box wide" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h2>{{ trip.destination }}</h2>
+          <button class="btn-danger" (click)="deleteTrip(trip.id)">Delete Trip</button>
+        </div>
+
+        <div class="activities-section">
+          <h3>Itinerary</h3>
+          
+          <div class="add-row">
+            <input type="number" [(ngModel)]="newActivity.dayNumber" placeholder="Day" class="w-small">
+            <input [(ngModel)]="newActivity.description" placeholder="Activity Description" class="w-large">
+            <input [(ngModel)]="newActivity.duration" placeholder="Duration" class="w-medium">
+            <button class="btn-primary" (click)="addActivity()">Add</button>
+          </div>
+
+          <div class="list">
+            @for (act of trip.activities; track act.id) {
+              <div class="list-item">
+                <span class="badge">Day {{ act.dayNumber }}</span>
+                <span class="desc">{{ act.description }}</span>
+                <span class="dur">{{ act.duration }}</span>
+                <button class="icon-btn" (click)="deleteActivity(act.id)">✕</button>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+</div>

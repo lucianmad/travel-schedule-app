@@ -1,10 +1,12 @@
 import { Component } from '@angular/core';
-import {AuthService} from '../../services/auth.service';
-import {User} from '../../models/user';
-import {map, Observable} from 'rxjs';
+import { AuthService } from '../../services/auth.service';
+import { User } from '../../models/user';
+import { TripComponent } from '../trip/trip';
 
 @Component({
   selector: 'app-home',
+  standalone: true, // 2. Make sure Home is standalone
+  imports: [TripComponent], // 3. Add TripComponent to imports
   templateUrl: './home.html',
   styleUrl: './home.css',
 })
