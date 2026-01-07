@@ -6,24 +6,22 @@ import com.travelscheduleapp.worker.Entity.TripStatus;
 import com.travelscheduleapp.worker.Repository.ActivityRepo;
 import com.travelscheduleapp.worker.Repository.TripRepo;
 import com.travelscheduleapp.worker.Config.RabbitMQConfig;
+import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class TripProcessorService {
 
-    @Autowired
-    private TripRepo tripRepository;
-
-    @Autowired
-    private ActivityRepo activityRepository;
-
-    @Autowired
-    private AiGenerationService aiService;
+    private final TripRepo tripRepository;
+    private final ActivityRepo activityRepository;
+    private final AiGenerationService aiService;
 
     @RabbitListener(queues = RabbitMQConfig.QUEUE_NAME)
     @Transactional
@@ -50,22 +48,28 @@ public class TripProcessorService {
         try {
             List<AiActivityDto> generatedActivities = aiService.generateItinerary(
                     trip.getDestination(),
-                    trip.getNumberOfDays(),
-                    "Standard"
+                    trip.getNumberOfDays()
             );
 
-            int index = 1;
-            for (AiActivityDto dto : generatedActivities) {
-                Activity activity = new Activity();
+            Map<Integer, List<AiActivityDto>> activitiesByDay = generatedActivities.stream()
+                    .collect(Collectors.groupingBy(AiActivityDto::getDay));
 
-                activity.setDescription(dto.getDescription());
-                activity.setDuration(dto.getDuration());
-                activity.setDayNumber(dto.getDay());
+            for (Map.Entry<Integer, List<AiActivityDto>> entry : activitiesByDay.entrySet()) {
+                List<AiActivityDto> dayActivities = entry.getValue();
+                int dayIndex = 0;
 
-                activity.setOrderIndex(index++);
-                activity.setTrip(trip);
+                for (AiActivityDto dto : dayActivities) {
+                    Activity activity = new Activity();
 
-                activityRepository.save(activity);
+                    activity.setDescription(dto.getDescription());
+                    activity.setDuration(dto.getDuration());
+                    activity.setDayNumber(dto.getDay());
+
+                    activity.setOrderIndex(dayIndex++);
+
+                    activity.setTrip(trip);
+                    activityRepository.save(activity);
+                }
             }
 
             trip.setTripStatus(TripStatus.COMPLETED);

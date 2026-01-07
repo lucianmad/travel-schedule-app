@@ -95,7 +95,17 @@ public class ActivityService {
             throw new AccessDeniedException("Access Denied");
         }
 
-        var activities = activityRepository.findByTripIdAndDayNumber(tripId, request.dayNumber());
+        var activities = activityRepository.findAllById(request.activityIds());
+
+        if (activities.size() != request.activityIds().size()) {
+            throw new BadRequestException("Some activities were not found");
+        }
+
+        boolean allBelongToTrip = activities.stream()
+                .allMatch(a -> a.getTrip().getId().equals(tripId));
+        if (!allBelongToTrip) {
+            throw new BadRequestException("Activity does not belong to this trip");
+        }
 
         for (int i = 0; i < request.activityIds().size(); i++) {
             Long id = request.activityIds().get(i);
@@ -103,8 +113,9 @@ public class ActivityService {
             var activity = activities.stream()
                     .filter(a -> a.getId().equals(id))
                     .findFirst()
-                    .orElseThrow(() -> new BadRequestException("Activity Id mismatch"));
+                    .orElseThrow();
 
+            activity.setDayNumber(request.dayNumber());
             activity.setOrderIndex(i);
         }
 
