@@ -93,7 +93,7 @@ public class TripController {
     @ApiResponse(responseCode = "409", description = "Validation failed")
     @ApiResponse(responseCode = "403", description = "Access denied")
     public ResponseEntity<ActivityResponse> addActivity(@PathVariable Long tripId,
-                                                        @Valid @RequestBody ActivityRequest request,
+                                                        @Valid @RequestBody ActivityCreateRequest request,
                                                         @Parameter(hidden = true) @RequestHeader("X-User-Id") Long userId) {
         var response = activityService.addActivity(tripId, userId, request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);

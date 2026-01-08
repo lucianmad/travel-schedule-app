@@ -1,7 +1,7 @@
 package com.travelscheduleapp.api.controller;
 
-import com.travelscheduleapp.api.dto.ActivityRequest;
 import com.travelscheduleapp.api.dto.ActivityResponse;
+import com.travelscheduleapp.api.dto.ActivityUpdateRequest;
 import com.travelscheduleapp.api.service.ActivityService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -39,7 +39,7 @@ public class ActivityController {
     @ApiResponse(responseCode = "400", description = "Invalid number of days")
     public ResponseEntity<ActivityResponse> update(@PathVariable Long id,
                                                    @Parameter(hidden = true) @RequestHeader("X-User-Id") Long userId,
-                                                   @Valid @RequestBody ActivityRequest activityRequest) {
+                                                   @Valid @RequestBody ActivityUpdateRequest activityRequest) {
         return ResponseEntity.ok(activityService.updateActivity(id, userId, activityRequest));
     }
 

@@ -1,8 +1,10 @@
 package com.travelscheduleapp.api.service;
 
+import com.travelscheduleapp.api.dto.ActivityCreateRequest;
 import com.travelscheduleapp.api.dto.ActivityReorderRequest;
-import com.travelscheduleapp.api.dto.ActivityRequest;
 import com.travelscheduleapp.api.dto.ActivityResponse;
+import com.travelscheduleapp.api.dto.ActivityUpdateRequest;
+import com.travelscheduleapp.api.entity.Activity;
 import com.travelscheduleapp.api.exception.AccessDeniedException;
 import com.travelscheduleapp.api.exception.BadRequestException;
 import com.travelscheduleapp.api.exception.ResourceNotFoundException;
@@ -14,6 +16,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -47,7 +51,7 @@ public class ActivityService {
     }
 
     @Transactional
-    public ActivityResponse addActivity(Long tripId, Long userId, ActivityRequest activityRequest) {
+    public ActivityResponse addActivity(Long tripId, Long userId, ActivityCreateRequest activityRequest) {
         var trip = tripRepository
                 .findById(tripId)
                 .orElseThrow(() -> new ResourceNotFoundException("Assigned trip not found"));
@@ -62,12 +66,15 @@ public class ActivityService {
 
         activity.setTrip(trip);
 
+        Integer maxIndex = activityRepository.findMaxOrderIndex(tripId, activityRequest.dayNumber());
+        activity.setOrderIndex(maxIndex + 1);
+
         var savedActivity = activityRepository.save(activity);
         return activityMapper.toResponseDto(savedActivity);
     }
 
     @Transactional
-    public ActivityResponse updateActivity(Long id, Long userId, ActivityRequest activityRequest) {
+    public ActivityResponse updateActivity(Long id, Long userId, ActivityUpdateRequest activityRequest) {
         var activity = activityRepository
                 .findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Activity not found"));
@@ -78,9 +85,8 @@ public class ActivityService {
             throw new AccessDeniedException("Access Denied");
         }
 
-        validateDayNumber(activityRequest.dayNumber(), trip.getNumberOfDays());
-
-        activityMapper.updateEntity(activity, activityRequest);
+        activity.setDescription(activityRequest.description());
+        activity.setDuration(activityRequest.duration());
 
         var savedActivity = activityRepository.save(activity);
         return activityMapper.toResponseDto(savedActivity);
@@ -107,13 +113,13 @@ public class ActivityService {
             throw new BadRequestException("Activity does not belong to this trip");
         }
 
+        Map<Long, Activity> activityMap = activities.stream()
+                .collect(Collectors.toMap(Activity::getId, a -> a));
+
         for (int i = 0; i < request.activityIds().size(); i++) {
             Long id = request.activityIds().get(i);
 
-            var activity = activities.stream()
-                    .filter(a -> a.getId().equals(id))
-                    .findFirst()
-                    .orElseThrow();
+            Activity activity = activityMap.get(id);
 
             activity.setDayNumber(request.dayNumber());
             activity.setOrderIndex(i);
