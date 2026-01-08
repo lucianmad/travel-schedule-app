@@ -23,21 +23,20 @@
   size: 16px;
 }
 
-
-
 .page-wrapper {
-  
+  position: relative;
+  min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 150px;
-  overflow: hidden;
+  overflow-x: hidden;
 }
 
 
 .background-image {
   position: absolute;
   inset: 0;
+  z-index: -1;
   background-image: url('https://images-ext-1.discordapp.net/external/1pjN1A7RPa-5T1y12jsutL1oxeOwQ7kHJ8ZpCLQSKQ4/https/lh3.googleusercontent.com/rd-gg-dl/ABS2GSnrXlfAP1MSr0qMgESjoMcPBMjhkMS7S0uzyA6cbu-k2wRTQ0JNQbZDKc3O9zKGn0rld8eKEt19pc0aQ7Fwz2AqHrNF79xSiaP-m7f5ne3mvtwS5OlxMMm6I2J1bY8DHsZsQeYIQ-960tqzV32dCIy0U7KkOcG5tmagVIslhLEmZhIqttwVKcXXu80jOCGS_yUQhyYY2potKQXC4XVijeSu0wiPGgKPaBs-HWiZtqcj4gGnjdpduUSvCs50sL_oTRNk5JsXNQGSRIJkvjX_rrDRRloQKBuwq9MuI9KLREXjua6yUXZRRKOYOZZ40myWrWbrtaRRi6Bq0D5EDtGvXCzCCBMSSrsQzY5IG36n3-pMwn-v9yBHyE-0mE854OAo2LOSyp80Bs_U5aIsdW9S0Z_u-FbymhXARbTmUVTpPVsixCNbeiUghwEZeyoQmao1FHB25GYRZmZMH9FE7_kGQtLqJE2ISc6b-SVgdR8fU2R_kie1M6scSPx344fRH3sKPWBr4KpwEqnSgdLjPJpRyVb-1pUoxc1GZt_q_7-LMRA0worLwB5yl6SA0LvnexzyC10LENc3auYyIHjBAE4hxZsXsZktj5KJod7QQZWI-ZWF5rqCozrNTZyiAvDMXy2SUHz5tlSfK7-D6_KNYk_EZyd7pjg9wCugo6Zh9dRHZuhaPjkbgiPwNJHnfmAndRWQm8XiN8GohkMdyM9H17tjx0WOw2Lw88-niDo-b9rmtY1BtegpwR8RPhjlYHQLCbyETalkBc5WEcJN0rtYiEPXzAqR9H2-K1_Bpcaww_wRbKv7QXKvw51HFBRIAvdKidOVnVpxWjstmiDL-naentQUkypLrEi0Ztj6eiq_Qx5QYmS-IO0LEebNYmhQQ3oVL0uuJ47KGNXoo8mgtCkyMu8ltrWU-FeMnPiRNHt0faFBlSYDafLmNu4S9CnIKlo5k8nghUOayXi3uVqsbkjCl5XQdihtv2bh-Nvai0Jn2zrw5UhflrC3Amb3_93MxC_qGTQ7u25JEP2vaMI4-bJDB_rAErn4mMpyE8y50OoVMi4qeJkEXSYpooJ9jF_opDUi3UtcKq3IL-xIzFQNtFfPxkKexwuUSR655dEFc3qge1OndXSc4pn0C6bPPhA6Dgi5ol8eD9vzZSny2vnlXpbqYnO7-UIcHmIrJvjBAnMXKAF_gvFmKHNbETtAfIJyDSZgB_8JAVjENcf2XAC80wEJR7gMW_mF%3Ds1024-rj?format=webp');
   background-size: cover;
   background-position: center;
@@ -46,7 +45,7 @@
 
 .content-wrapper {
   position: relative;
-  z-index: 10;
+  z-index: 1;
   width: 100%;
   max-width: 500px;
 }
@@ -199,18 +198,6 @@ input.error {
 
 .footer a:hover {
   text-decoration: underline;
-}
-
-
-.trust-indicator {
-  margin-top: 24px;
-  text-align: center;
-}
-
-.trust-indicator p {
-  font-size: 12px;
-  color: rgba(107, 114, 128, 0.8);
-  margin: 0;
 }
 
 @media (min-width: 768px) {
