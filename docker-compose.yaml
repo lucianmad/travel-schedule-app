@@ -3,13 +3,18 @@ services:
     image: postgres:15
     container_name: travel-postgres
     environment:
-      POSTGRES_USER: travelscheduleuser
-      POSTGRES_PASSWORD: travelschedulepassword
+      POSTGRES_USER: ${TRAVEL_DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASS}
       POSTGRES_DB: travelscheduledb
     ports:
       - "5433:5432"
     volumes:
       - pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${TRAVEL_DB_USER} -d travelscheduledb" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   rabbitmq:
     image: rabbitmq:3-management
@@ -17,6 +22,44 @@ services:
     ports:
       - "5672:5672"
       - "15672:15672"
+    healthcheck:
+      test: [ "CMD", "rabbitmq-diagnostics", "-q", "ping" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
+  api:
+    build: ./api
+    container_name: travel-api
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_DATASOURCE_USERNAME=${TRAVEL_DB_USER}
+      - SPRING_DATASOURCE_PASSWORD=${DB_PASS}
+      - SPRING_DATASOURCE_URL=${DB_URL}
+      - SPRING_RABBITMQ_HOST=rabbitmq
+    depends_on:
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+
+  worker:
+    build: ./worker
+    container_name: travel-worker
+    environment:
+      - SPRING_DATASOURCE_USERNAME=${TRAVEL_DB_USER}
+      - SPRING_DATASOURCE_PASSWORD=${DB_PASS}
+      - SPRING_DATASOURCE_URL=${DB_URL}
+      - SPRING_RABBITMQ_HOST=rabbitmq
+      - SPRING_AI_OPENAI_API_KEY=${AI_API_KEY}
+      - SPRING_AI_OPENAI_BASE_URL=https://generativelanguage.googleapis.com/v1beta/openai/
+      - SPRING_AI_OPENAI_CHAT_OPTIONS_MODEL=gemini-2.5-flash
+      - SPRING_AI_OPENAI_CHAT_OPTIONS_TEMPERATURE=0.7
+    depends_on:
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
 volumes:
   pg_data:

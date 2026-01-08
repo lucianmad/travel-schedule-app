@@ -1,0 +1,7 @@
+target
+*.class
+.git
+.idea
+*.iml
+# CRITICAL: Prevent local secrets from getting baked into the image
+src/main/resources/application-secret.properties
