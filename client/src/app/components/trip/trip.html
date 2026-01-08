@@ -1,20 +1,21 @@
 <div class="main-container">
   
   <nav class="navbar">
-    <h1>TravelPlan</h1>
-    <button class="btn-primary" (click)="isCreateOpen.set(true)">+ New Trip</button>
+    <h1>Your Travel Plan</h1>
+    <button class="new-trip-btn" (click)="isCreateOpen = true">+ New Trip</button>
   </nav>
 
   <div class="grid-container">
-    @for (trip of trips(); track trip.id) {
+    @for (trip of trips | async; track trip.id) {
       <div class="card" (click)="selectTrip(trip)">
-        <div class="card-img-placeholder">
-          <img [src]="'https://picsum.photos/seed/' + trip.id + '/400/200'" alt="Trip">
-        </div>
         <div class="card-content">
           <h3>{{ trip.destination }}</h3>
           <p class="days">{{ trip.numberOfDays }} Days</p>
-          <p class="status">{{ trip.status }}</p>
+          <p [ngClass]="trip.status == 'PENDING' || trip.status == 'PROCESSING' ? 'pending-status' :
+                           trip.status == 'COMPLETED' ? 'completed-status' :
+                           'failed-status'">
+            {{ trip.status }}
+          </p>
         </div>
       </div>
     } @empty {
@@ -22,14 +23,14 @@
     }
   </div>
 
-  @if (isCreateOpen()) {
-    <div class="modal-overlay" (click)="isCreateOpen.set(false)">
+  @if (isCreateOpen) {
+    <div class="modal-overlay" (click)="isCreateOpen = false">
       <div class="modal-box" (click)="$event.stopPropagation()">
         <h2>Create Trip</h2>
         
         <div class="form-group">
           <label>Destination</label>
-          <input [(ngModel)]="newTrip.destination" placeholder="Paris, France">
+          <input [(ngModel)]="newTrip.destination" placeholder="eg. Paris, France">
         </div>
         
         <div class="form-group">
@@ -38,37 +39,180 @@
         </div>
 
         <div class="modal-actions">
-          <button (click)="isCreateOpen.set(false)">Cancel</button>
-          <button class="btn-primary" (click)="saveTrip()">Save</button>
+          <button (click)="isCreateOpen = false">Cancel</button>
+          <button class="btn-primary" (click)="saveTrip(); isCreateOpen = false;">Save</button>
         </div>
       </div>
     </div>
   }
 
-  @if (isDetailOpen() && selectedTrip(); as trip) {
+  @if (isDetailOpen && selectedTrip; as trip) {
     <div class="modal-overlay" (click)="closeModals()">
       <div class="modal-box wide" (click)="$event.stopPropagation()">
         <div class="modal-header">
+          <h3 style="margin-left: 20px; margin-right: 30px;">{{ trip.numberOfDays }} Days</h3>
           <h2>{{ trip.destination }}</h2>
-          <button class="btn-danger" (click)="deleteTrip(trip.id)">Delete Trip</button>
+          
+          <div class="trip-btns">
+            <button class="edit-trip-btn" (click)="openEditTrip(trip);">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button class="delete-trip-btn" (click)="deleteTrip(trip.id); closeModals();">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
+          
         </div>
 
         <div class="activities-section">
-          <h3>Itinerary</h3>
-          
-
           <div class="list">
-            @for (act of trip.activities; track act.id) {
-              <div class="list-item">
-                <span class="badge">Day {{ act.dayNumber }}</span>
-                <span class="desc">{{ act.description }}</span>
-                <span class="dur">{{ act.duration }}</span>
-                <button class="icon-btn" (click)="deleteActivity(act.id)">✕</button>
+            @for (dayGroup of groupedActivities; track dayGroup.day) {
+              <div class="day-group">
+
+                <div class="day-title">
+                  Day {{ dayGroup.day }}
+
+                  <button class="add-activity-btn">
+                    <mat-icon (click)="openAddActivity(dayGroup.day)">add_circle</mat-icon>
+                  </button>
+                </div>
+                
+
+                <div
+                  cdkDropList
+                  [id]="'cdk-drop-list-' + dayGroup.day"
+                  [cdkDropListData]="dayGroup.activities"
+                  [cdkDropListConnectedTo]="getConnectedDropLists()"
+                  (cdkDropListDropped)="onDrop($event, dayGroup.day)"
+                  class="list"
+                >
+
+                  @if (dayGroup.activities.length === 0) {
+                    <div class="empty-day-placeholder">
+                      Drop activity here
+                    </div>
+                  }
+
+                  @for (act of dayGroup.activities; track act.id) {
+                    <div class="list-item" cdkDrag>
+
+                      <span class="desc">{{ act.description }}</span>
+
+                      <span class="dur">{{ act.duration }}</span>
+                      <button class="duration-icon">
+                        <mat-icon>schedule</mat-icon>
+                      </button>
+
+                      <button class="edit-activity-btn" (click)="openEditActivity(act)">
+                        <mat-icon>edit</mat-icon>
+                      </button>
+
+                      <button class="delete-activity-btn" (click)="deleteActivity(act.id)">
+                        <mat-icon>delete</mat-icon>
+                      </button>
+
+                    </div>
+                  }
+
+                </div>
               </div>
             }
           </div>
         </div>
+
+        <button 
+          (click)="saveOrder()"
+          [ngClass]="isOrderDirty == true ? 'save-enabled-btn' : 'save-disabled-btn'"
+        >
+          Save order
+        </button>
       </div>
     </div>
   }
+
+  @if (isEditTripOpen && selectedTrip) {
+    <div class="modal-overlay" (click)="isEditTripOpen = false">
+      <div class="modal-box" (click)="$event.stopPropagation()">
+        <h2>Edit Trip</h2>
+
+        <div class="form-group">
+          <label>Destination</label>
+          <input [(ngModel)]="editTrip.destination" placeholder="eg. Paris, France">
+        </div>
+
+        <div class="form-group">
+          <label>Days</label>
+          <input type="number" [(ngModel)]="editTrip.numberOfDays">
+        </div>
+
+        <div class="modal-actions">
+          <button class="close-edit-btn" (click)="isEditTripOpen = false">Cancel</button>
+          <button class="save-edit-btn" (click)="saveEditTrip()">Save</button>
+        </div>
+      </div>
+    </div>
+  }
+
+  @if (isEditActivityOpen) {
+    <div class="modal-overlay" (click)="isEditActivityOpen = false">
+      <div class="modal-box" (click)="$event.stopPropagation()">
+        <h2>Edit Activity</h2>
+
+        <div class="form-group">
+          <label>Duration</label>
+          <input [(ngModel)]="editActivity.duration" placeholder="e.g., 2h">
+        </div>
+
+        <div class="form-group">
+          <label>Description</label>
+          <textarea
+            [(ngModel)]="editActivity.description"
+            rows="3"
+            placeholder="Activity description">
+          </textarea>
+        </div>
+
+        <div class="modal-actions">
+          <button class="close-edit-btn" (click)="isEditActivityOpen = false">Cancel</button>
+          <button class="save-edit-btn" (click)="saveEditActivity()">Save</button>
+        </div>
+      </div>
+    </div>
+  }
+
+  @if (isAddActivityOpen) {
+    <div class="modal-overlay" (click)="isAddActivityOpen = false">
+      <div class="modal-box" (click)="$event.stopPropagation()">
+        <h2>Add Activity - Day {{ addActivityDay }}</h2>
+
+        <div class="form-group">
+          <label>Duration</label>
+          <input
+            [(ngModel)]="newActivity.duration"
+            placeholder="e.g. 2h"
+          />
+        </div>
+
+        <div class="form-group">
+          <label>Description</label>
+          <input
+            [(ngModel)]="newActivity.description"
+            placeholder="Activity description"
+          />
+        </div>
+
+        <div class="modal-actions">
+          <button (click)="isAddActivityOpen = false">Cancel</button>
+          <button
+            class="btn-primary"
+            (click)="saveAddActivity()"
+            [disabled]="!newActivity.description || !newActivity.duration"
+          >
+            Save
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+
 </div>

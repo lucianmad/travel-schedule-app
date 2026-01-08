@@ -1,6 +1,5 @@
-export interface ActivityRequest {
+export interface ActivityCreateRequest {
     dayNumber: number;
-    orderIndex: number;
     duration: string;
     description: string;
 }

@@ -1,8 +1,8 @@
 <div class="home-container">
-  <header class="home-header">
+  <div class="home-header">
     <h2>Hello, {{ user?.username }}!</h2>
-    <button class="btn-primary" (click)="onLogout()">Logout</button>
-  </header>
+    <button class="logout-btn" (click)="onLogout()">Logout</button>
+  </div>
 
   <main>
     <app-trip></app-trip>

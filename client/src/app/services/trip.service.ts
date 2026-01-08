@@ -1,11 +1,13 @@
 import { inject, Injectable } from "@angular/core";
-import { BehaviorSubject, Observable } from "rxjs";
-import { User } from "../models/user";
+import { Observable } from "rxjs";
 import { AuthService } from "./auth.service";
 import { HttpClient } from "@angular/common/http";
 import { Router } from "@angular/router";
 import { TripRequest } from "../models/trip-request";
 import { Trip } from "../models/trip";
+import { ReorderRequest } from "../models/reorder-request";
+import { Activity } from "../models/activity";
+import { ActivityCreateRequest } from "../models/activity-create-request";
 
 @Injectable({
   providedIn: 'root'
@@ -22,23 +24,30 @@ export class TripService {
     private currentUser = this.authService.getCurrentUser();
 
     get(): Observable<Trip[]>{
-        return this.http.get<Trip[]>(`${this.apiUrl}`);
+        return this.http.get<Trip[]>(`${this.apiUrl}`, {headers: {'X-User-Id': `${this.currentUser?.id}`}});
     }
 
-    getById(id: number): Observable<Trip>{
-        return this.http.get<Trip>(`${this.apiUrl}/${id}`, {headers: {'X-User-Id': `${this.currentUser?.id}`}});
+    getById(tripId: number): Observable<Trip>{
+        return this.http.get<Trip>(`${this.apiUrl}/${tripId}`, {headers: {'X-User-Id': `${this.currentUser?.id}`}});
     }
 
     create(request: TripRequest): Observable<Trip>{
         return this.http.post<Trip>(`${this.apiUrl}`, request, {headers: {'X-User-Id': `${this.currentUser?.id}`}});
     }
 
-    update(request: TripRequest, id: number): Observable<Trip>{
-        return this.http.put<Trip>(`${this.apiUrl}/${id}`, request, {headers: {'X-User-Id': `${this.currentUser?.id}`}});
+    update(request: TripRequest, tripId: number): Observable<Trip>{
+        return this.http.put<Trip>(`${this.apiUrl}/${tripId}`, request, {headers: {'X-User-Id': `${this.currentUser?.id}`}});
     }
 
-    delete(id: number): Observable<any>{
-        return this.http.delete(`${this.apiUrl}/${id}`, {headers: {'X-User-Id': `${this.currentUser?.id}`}});
+    delete(tripId: number): Observable<any>{
+        return this.http.delete(`${this.apiUrl}/${tripId}`, {headers: {'X-User-Id': `${this.currentUser?.id}`}});
     }
 
+    reorderActivities(request: ReorderRequest, tripId: number): Observable<any>{
+        return this.http.put(`${this.apiUrl}/${tripId}/activities/reorder`, request, {headers: {'X-User-Id': `${this.currentUser?.id}`}});
+    }
+
+    createActivity(tripId: number, request: ActivityCreateRequest): Observable<Activity>{
+        return this.http.post<Activity>(`${this.apiUrl}/${tripId}/activities`, request, {headers: {'X-User-Id': `${this.currentUser?.id}`}});
+    }
 }
