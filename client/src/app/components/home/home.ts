@@ -1,8 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
 import { User } from '../../models/user';
 import { TripComponent } from '../trip/trip';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-home',
@@ -11,14 +12,21 @@ import { TripComponent } from '../trip/trip';
   templateUrl: './home.html',
   styleUrl: './home.css',
 })
-export class Home {
-  user: User | null;
+export class Home implements OnDestroy{
+  user: User | null = null;
+  private sub: Subscription;
 
   constructor(private authService: AuthService) {
-    this.user = this.authService.getCurrentUser();
+    this.sub = this.authService.currentUser$.subscribe(user => {
+      this.user = user;
+    });
   }
 
   onLogout(): void {
     this.authService.logout();
+  }
+
+  ngOnDestroy(): void {
+    this.sub.unsubscribe();
   }
 }

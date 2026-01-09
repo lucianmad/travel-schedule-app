@@ -205,3 +205,13 @@ input.error {
     padding: 40px;
   }
 }
+
+.form-error {
+  margin-top: 12px;
+  padding: 10px;
+  border-radius: 6px;
+  background: #ffe6e6;
+  color: #b00020;
+  font-size: 0.9rem;
+  text-align: center;
+}

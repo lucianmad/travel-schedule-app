@@ -110,6 +110,12 @@
             }
           </div>
 
+          @if (errorMessage) {
+            <div class="form-error">
+              {{ errorMessage }}
+            </div>
+          }
+
           <button type="submit" class="submit-btn" [disabled]="isLoading">
             {{ isLoading ? 'Creating Account...' : 'Create Account' }}
           </button>

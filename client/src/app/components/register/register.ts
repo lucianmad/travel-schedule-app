@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component } from '@angular/core';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {AuthService} from '../../services/auth.service';
 import {Router, RouterLink} from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-register',
@@ -20,7 +21,8 @@ export class Register {
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private cdr: ChangeDetectorRef
   ) {
     this.registerForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -53,9 +55,18 @@ export class Register {
       next: () => {
         this.router.navigate(['/home']);
       },
-      error: (error) => {
+      error: (error: HttpErrorResponse) => {
         this.isLoading = false;
-        this.errorMessage = error.error?.message || 'Registration failed. Please try again.';
+
+        if (error.status === 409) {
+          this.errorMessage = error.error['error'];
+        } else if (error.status === 400) {
+          this.errorMessage = 'Validation failed. Please check your input.';
+        } else {
+          this.errorMessage = 'Registration failed. Please try again.';
+        }
+
+        this.cdr.detectChanges();
       }
     });
   }

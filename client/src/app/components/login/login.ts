@@ -1,7 +1,9 @@
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component } from '@angular/core';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {AuthService} from '../../services/auth.service';
 import {Router, RouterLink} from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-login',
@@ -20,7 +22,8 @@ export class Login {
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private cdr: ChangeDetectorRef
   ) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -37,15 +40,25 @@ export class Login {
     this.isLoading = true;
     this.errorMessage = '';
 
-    this.authService.login(this.loginForm.value).subscribe({
-      next: () => {
-        this.router.navigate(['/home']);
-      },
-      error: (error) => {
-        this.isLoading = false;
-        this.errorMessage = error.error?.message || 'Login failed. Check your credentials.';
-      }
-    });
+    this.authService.login(this.loginForm.value)
+      .subscribe({
+        next: () => {
+          this.router.navigate(['/home']);
+        },
+        error: (error: HttpErrorResponse) => {
+          this.isLoading = false;
+
+          if (error.status === 401) {
+            this.errorMessage = 'Invalid credentials.';
+          } else if (error.status === 400) {
+            this.errorMessage = 'Validation failed. Please check your input.';
+          } else {
+            this.errorMessage = 'Login failed. Please try again.';
+          }
+
+          this.cdr.detectChanges();
+        }
+      });
   }
 
   get email() {

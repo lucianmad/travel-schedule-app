@@ -4,6 +4,8 @@ import com.travelscheduleapp.api.dto.AuthResponse;
 import com.travelscheduleapp.api.dto.LoginRequest;
 import com.travelscheduleapp.api.dto.RegisterRequest;
 import com.travelscheduleapp.api.exception.BadRequestException;
+import com.travelscheduleapp.api.exception.ConflictException;
+import com.travelscheduleapp.api.exception.InvalidCredentialsException;
 import com.travelscheduleapp.api.mapper.UserMapper;
 import com.travelscheduleapp.api.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,15 +22,15 @@ public class UserService {
 
     public AuthResponse register(RegisterRequest request) {
         if (!Objects.equals(request.password(), request.confirmPassword())) {
-            throw new BadRequestException("Passwords do not match");
+            throw new ConflictException("Passwords do not match");
         }
 
         if (userRepository.findByEmail(request.email()) != null) {
-            throw new BadRequestException("Email already taken");
+            throw new ConflictException("Email already taken");
         }
 
         if (userRepository.findByUsername(request.username()) != null) {
-            throw new BadRequestException("Username already taken");
+            throw new ConflictException("Username already taken");
         }
 
         var user = userMapper.toEntity(request);
@@ -43,11 +45,11 @@ public class UserService {
     public AuthResponse login(LoginRequest request) {
         var user = userRepository.findByEmail(request.email());
         if (user == null) {
-            throw new BadRequestException("Invalid credentials");
+            throw new InvalidCredentialsException("Invalid credentials");
         }
 
         if (!BCrypt.checkpw(request.password(), user.getPasswordHash())) {
-            throw new BadRequestException("Invalid credentials");
+            throw new InvalidCredentialsException("Invalid credentials");
         }
 
         return userMapper.toDto(user);

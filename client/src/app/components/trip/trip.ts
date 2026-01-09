@@ -13,6 +13,7 @@ import { CdkDragDrop, DragDropModule, moveItemInArray, transferArrayItem } from 
 import { ReorderRequest } from '../../models/reorder-request';
 import { ActivityUpdateRequest } from '../../models/activity-update-request';
 import { ActivityCreateRequest } from '../../models/activity-create-request';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-trip',
@@ -22,6 +23,17 @@ import { ActivityCreateRequest } from '../../models/activity-create-request';
   styleUrl: './trip.css'
 })
 export class TripComponent {
+
+  constructor(
+    private tripService: TripService,
+    private activityService: ActivityService,
+    private authService: AuthService
+  ) {
+    this.authService.currentUser$.subscribe(user => {
+      this.closeModals();
+      this.refresh.next();
+    });
+  }
 
   private refresh = new Subject<void>();
 
@@ -80,11 +92,6 @@ export class TripComponent {
     day: number;
     activities: Activity[] 
   }[] = [];
-
-  constructor(
-    private tripService: TripService,
-    private activityService: ActivityService
-  ) {}
 
   saveTrip(): void {
     this.tripService.create(this.newTrip).subscribe({
