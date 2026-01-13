@@ -137,7 +137,7 @@ textarea {
 .activities-section {
     flex: 1;
     overflow-y: auto;
-    padding-right: 10px; 
+    padding-right: 10px;
 }
 
 /* List */
@@ -148,7 +148,7 @@ textarea {
     margin-right: 5px;
     font: 16px;
 }
-.dur { 
+.dur {
     color: #666;
     font-size: 15px;
     margin-left: 5px;
@@ -216,23 +216,23 @@ button { padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; }
     color: white;
 }
 
-.edit-trip-btn { 
+.edit-trip-btn {
     margin-right: 10px;
     border-radius: 20px;
 }
 
-.edit-trip-btn:hover { 
+.edit-trip-btn:hover {
     background: #408edc;
-    color: white; 
+    color: white;
 }
 
-.delete-trip-btn { 
+.delete-trip-btn {
     border-radius: 20px;
 }
 
-.delete-trip-btn:hover { 
+.delete-trip-btn:hover {
     background: #ff4a4a;
-    color: white; 
+    color: white;
 }
 
 .day-group {
@@ -294,4 +294,14 @@ button { padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; }
 
 .add-activity-btn:hover {
     color: #5aa8e1;
+}
+
+.form-error {
+  margin-top: 12px;
+  padding: 10px;
+  border-radius: 6px;
+  background: #ffe6e6;
+  color: #b00020;
+  font-size: 0.9rem;
+  text-align: center;
 }

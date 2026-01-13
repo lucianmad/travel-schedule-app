@@ -45,7 +45,7 @@ export class TripComponent {
         activities: [...t.activities].sort((a, b) => {
           if (a.dayNumber !== b.dayNumber)
             return a.dayNumber - b.dayNumber;
-          
+
           return a.orderIndex - b.orderIndex;
         })
       })))
@@ -63,6 +63,7 @@ export class TripComponent {
   addActivityDay!: number;
 
   isOrderDirty = false;
+  errorMessage: string = '';
 
   newTrip: TripRequest = {
     destination: '',
@@ -86,11 +87,9 @@ export class TripComponent {
     description: ''
   };
 
-  activitiesByDay = new Map<number, Activity[]>();
-
   groupedActivities: {
     day: number;
-    activities: Activity[] 
+    activities: Activity[]
   }[] = [];
 
   saveTrip(): void {
@@ -99,7 +98,7 @@ export class TripComponent {
         this.isCreateOpen = false;
         this.newTrip = {
           destination: '',
-          numberOfDays: 1 
+          numberOfDays: 1
         };
         this.refresh.next();
 
@@ -180,7 +179,10 @@ export class TripComponent {
 
         this.selectedTrip = updatedTrip;
       },
-      error: err => console.error(err)
+      error: err => {
+        this.errorMessage = err.error['error'];
+        console.log(err.error['error']);
+      },
     });
   }
 
@@ -373,5 +375,6 @@ export class TripComponent {
     this.selectedTrip = null;
     this.isEditTripOpen = false;
     this.isEditActivityOpen = false;
+    this.errorMessage = '';
   }
 }

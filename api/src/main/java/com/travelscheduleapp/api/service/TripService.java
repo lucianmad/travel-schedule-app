@@ -4,6 +4,7 @@ import com.travelscheduleapp.api.dto.TripRequest;
 import com.travelscheduleapp.api.dto.TripResponse;
 import com.travelscheduleapp.api.entity.Trip;
 import com.travelscheduleapp.api.exception.AccessDeniedException;
+import com.travelscheduleapp.api.exception.ConflictException;
 import com.travelscheduleapp.api.exception.ResourceNotFoundException;
 import com.travelscheduleapp.api.mapper.TripMapper;
 import com.travelscheduleapp.api.repository.TripRepository;
@@ -65,6 +66,10 @@ public class TripService {
                 .orElseThrow(() -> new ResourceNotFoundException("Trip not found"));
 
         validateUser(trip, userId);
+
+        if (tripRequest.numberOfDays() < trip.getNumberOfDays()) {
+            throw new ConflictException("Cannot modify the number of days to a smaller one");
+        }
 
         tripMapper.updateTrip(trip, tripRequest);
 
