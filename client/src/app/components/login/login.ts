@@ -3,14 +3,15 @@ import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/
 import {AuthService} from '../../services/auth.service';
 import {Router, RouterLink} from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
-import { finalize } from 'rxjs';
+import { MatIcon } from "@angular/material/icon";
 
 @Component({
   selector: 'app-login',
   imports: [
     ReactiveFormsModule,
-    RouterLink
-  ],
+    RouterLink,
+    MatIcon
+],
   templateUrl: './login.html',
   styleUrl: './login.css',
 })

@@ -1,4 +1,3 @@
-/* Layout */
 .main-container {
     padding: 2% 4%;
     font-family: 'Segoe UI', sans-serif;
@@ -17,7 +16,7 @@
     width: auto;
     height: auto;
     padding: 10px 16px;
-    background-color: #519ef0;
+    background-color: var(--primary-color);
     color: white;
     border: none;
     border-radius: 6px;
@@ -28,15 +27,39 @@
 }
 
 .new-trip-btn:hover {
-    background-color: #35689f;
+    background-color: var(--secondary-color);
 }
 
-/* Grid */
-.grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; }
-.card { background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.1); cursor: pointer; transition: 0.2s; }
-.card:hover { transform: translateY(-5px); box-shadow: 0 5px 15px rgba(0,0,0,0.15); }
-.card-content { padding: 15px; }
-.days { color: #666; font-size: 0.9em; margin: 5px 0; }
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 25px;
+}
+
+.card {
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.card:hover {
+    background: rgba(136, 204, 179, 0.121);
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(1, 116, 76, 0.233);
+}
+
+.card-content {
+    padding: 15px;
+}
+
+.days {
+    color: #666;
+    font-size: 0.9em;
+    margin: 5px 0;
+}
 
 .pending-status {
     color: #f8c442;
@@ -57,7 +80,6 @@
     letter-spacing: 1px;
 }
 
-/* Modals */
 .modal-overlay {
     position: fixed;
     inset: 0;
@@ -90,7 +112,6 @@
     flex-shrink: 0;
 }
 
-/* Form Elements */
 .form-group {
     margin-bottom: 15px;
 }
@@ -140,8 +161,19 @@ textarea {
     padding-right: 10px;
 }
 
-/* List */
-.list-item { display: flex; align-items: center; padding: 10px; border-bottom: 1px solid #f0f0f0; gap: 15px; }
+.list-item-even,
+.list-item-odd {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid #f0f0f0;
+    gap: 15px;
+}
+
+.list-item-even {
+    background-color: rgba(76, 175, 79, 0.136);
+}
+
 
 .desc {
     flex: 1;
@@ -162,6 +194,7 @@ textarea {
     margin-left: 0px;
     margin-bottom: 1px;
     padding: 0;
+    cursor: auto;
 }
 
 .edit-activity-btn,
@@ -172,22 +205,23 @@ textarea {
 }
 
 .edit-activity-btn:hover {
-    color: #3b88d5;
+    color: var(--primary-color);
 }
 
 .delete-activity-btn:hover {
     color: #ff4a4a;
 }
 
-
-/* Buttons */
-button { padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; }
-.btn-primary { background: #6200ea; color: white; }
-.btn-primary:hover { background: #3700b3; }
+button {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
 
 .save-edit-btn {
     width: 40%;
-    background-color: #6200ea;
+    background-color: var(--primary-color);
     color: white;
     padding: 10px 20px;
     border: none;
@@ -197,13 +231,13 @@ button { padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; }
     font-size: 14px;
 }
 .save-edit-btn:hover {
-    background-color: #3700b3;
+    background-color: var(--secondary-color);
 }
 
 .close-edit-btn {
     width: 40%;
     background-color: #ccc;
-    color: #666;
+    color: black;
     padding: 10px 20px;
     border: none;
     border-radius: 5px;
@@ -212,8 +246,7 @@ button { padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; }
     font-size: 14px;
 }
 .close-edit-btn:hover {
-    background-color: #999;
-    color: white;
+    background-color: #a3a3a3;
 }
 
 .edit-trip-btn {
@@ -222,7 +255,7 @@ button { padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; }
 }
 
 .edit-trip-btn:hover {
-    background: #408edc;
+    background: var(--primary-color);
     color: white;
 }
 
@@ -249,7 +282,7 @@ button { padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; }
 }
 
 .save-enabled-btn {
-    background-color: #6200ea;
+    background-color: var(--primary-color);
     color: white;
     padding: 10px 20px;
     border: none;
@@ -259,7 +292,7 @@ button { padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; }
 }
 
 .save-enabled-btn:hover {
-    background-color: #3700b3;
+    background-color: var(--secondary-color);
 }
 
 .save-disabled-btn {
@@ -283,7 +316,7 @@ button { padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; }
 
 .add-activity-btn {
     background: transparent;
-    color: #a3c3d2;
+    color: var(--primary-color);
     border: none;
     cursor: pointer;
     margin-left: 10px;
@@ -293,7 +326,7 @@ button { padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; }
 }
 
 .add-activity-btn:hover {
-    color: #5aa8e1;
+    color: var(--secondary-color);
 }
 
 .form-error {

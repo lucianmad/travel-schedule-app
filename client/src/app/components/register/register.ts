@@ -3,13 +3,15 @@ import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/
 import {AuthService} from '../../services/auth.service';
 import {Router, RouterLink} from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
+import { MatIcon } from "@angular/material/icon";
 
 @Component({
   selector: 'app-register',
   imports: [
     ReactiveFormsModule,
-    RouterLink
-  ],
+    RouterLink,
+    MatIcon
+],
   templateUrl: './register.html',
   styleUrl: './register.css',
 })

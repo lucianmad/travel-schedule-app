@@ -39,8 +39,8 @@
         </div>
 
         <div class="modal-actions">
-          <button (click)="isCreateOpen = false">Cancel</button>
-          <button class="btn-primary" (click)="saveTrip(); isCreateOpen = false;">Save</button>
+          <button class="close-edit-btn" (click)="isCreateOpen = false">Cancel</button>
+          <button class="save-edit-btn" (click)="saveTrip(); isCreateOpen = false;">Save</button>
         </div>
       </div>
     </div>
@@ -94,7 +94,7 @@
                   }
 
                   @for (act of dayGroup.activities; track act.id) {
-                    <div class="list-item" cdkDrag>
+                    <div [ngClass]="act.orderIndex % 2 == 0 ? 'list-item-even' : 'list-item-odd'" cdkDrag>
 
                       <span class="desc">{{ act.description }}</span>
 
@@ -200,16 +200,17 @@
 
         <div class="form-group">
           <label>Description</label>
-          <input
+          <textarea
             [(ngModel)]="newActivity.description"
             placeholder="Activity description"
-          />
+            rows="3">
+          </textarea>
         </div>
 
         <div class="modal-actions">
-          <button (click)="isAddActivityOpen = false">Cancel</button>
+          <button class="close-edit-btn" (click)="isAddActivityOpen = false">Cancel</button>
           <button
-            class="btn-primary"
+            class="save-edit-btn"
             (click)="saveAddActivity()"
             [disabled]="!newActivity.description || !newActivity.duration"
           >

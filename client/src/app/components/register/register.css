@@ -17,6 +17,7 @@
 .title-header {
   size: 20px;
   font-weight: bold;
+  margin-bottom: 5%;
 }
 
 .title-footer {
@@ -75,7 +76,16 @@
   border-radius: 50%;
   background: linear-gradient(to bottom right, var(--primary), var(--secondary));
   margin-bottom: 16px;
+  color: white;
 }
+
+.icon-wrapper mat-icon {
+  font-size: 36px;
+  width: 36px;
+  height: 36px;
+  line-height: 36px;
+}
+
 
 .icon-wrapper svg {
   width: 32px;

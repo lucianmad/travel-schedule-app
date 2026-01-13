@@ -17,7 +17,7 @@
 .logout-btn {
   width: 8%;
   height: 46px;
-  background-color: #519ef0;
+  background-color: var(--primary-color);
   color: white;
   border: none;
   border-radius: 6px;
@@ -27,5 +27,5 @@
 }
 
 .logout-btn:hover {
-  background-color: #35689f;
+  background-color: var(--secondary-color);
 }

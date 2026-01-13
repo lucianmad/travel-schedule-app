@@ -67,12 +67,15 @@
   border-radius: 50%;
   background: linear-gradient(to bottom right, var(--primary), var(--secondary));
   margin-bottom: 16px;
+  color: white;
+  padding: 0;
 }
 
-.icon-wrapper svg {
-  width: 32px;
-  height: 32px;
-  color: var(--primary-foreground);
+.icon-wrapper mat-icon {
+  font-size: 36px;
+  width: 36px;
+  height: 36px;
+  line-height: 36px;
 }
 
 h1 {
@@ -88,6 +91,7 @@ h1 {
   text-wrap: pretty;
   margin: 0;
   font-size: 15px;
+  margin-top: 5%;
 }
 
 

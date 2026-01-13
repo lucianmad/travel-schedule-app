@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatIcon } from '@angular/material/icon';
@@ -27,7 +27,8 @@ export class TripComponent {
   constructor(
     private tripService: TripService,
     private activityService: ActivityService,
-    private authService: AuthService
+    private authService: AuthService,
+    private cdr: ChangeDetectorRef
   ) {
     this.authService.currentUser$.subscribe(user => {
       this.closeModals();
@@ -161,6 +162,8 @@ export class TripComponent {
   }
 
   openEditTrip(trip: Trip): void {
+    this.errorMessage = '';
+
     this.editTrip = {
       destination: trip.destination,
       numberOfDays: trip.numberOfDays
@@ -182,6 +185,7 @@ export class TripComponent {
       error: err => {
         this.errorMessage = err.error['error'];
         console.log(err.error['error']);
+        this.cdr.detectChanges();
       },
     });
   }
